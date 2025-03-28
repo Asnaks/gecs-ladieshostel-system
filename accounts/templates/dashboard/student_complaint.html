@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Complaint Management</title>
+    <style>
+  /* General Page Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: white; /* Changed from gradient to plain white */
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Ensures scrolling if content is long */
+    overflow-y: auto; /* Allows scrolling */
+}
+
+/* Main Container */
+.container, .complaint-list {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    transition: all 0.3s ease;
+    margin: 20px 0; /* Adds spacing */
+}
+
+/* Form Styling */
+h2 { 
+    color: #2a79ce; 
+    font-size: 22px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+}
+
+select, textarea, input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: 0.3s ease-in-out;
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #2a79ce;
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(42, 121, 206, 0.3);
+}
+
+/* Buttons */
+button {
+    padding: 15px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 8px;
+    width: 100%;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #2a79ce, #1e58a0);
+}
+
+.view-btn {
+    background: linear-gradient(135deg, #28A745, #1e7e34);
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #4f80ab, #205080);
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #f6d461, #daa107);
+    color: black;
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #f03b3b, #a71d2a);
+}
+
+/* Button Hover Effects */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Active Effect */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Complaint List */
+.complaint-list {
+    display: none;
+    text-align: left;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.complaint-item {
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: 0.3s ease;
+}
+
+.complaint-item:hover {
+    background: #f0f5ff;
+}
+
+/* Scrollbar Styling */
+.complaint-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.complaint-list::-webkit-scrollbar-thumb {
+    background: #2a79ce;
+    border-radius: 5px;
+}
+
+.complaint-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* File Preview */
+.file-preview img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px auto;
+    border-radius: 6px;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.file-preview iframe {
+    width: 100%;
+    height: 200px;
+    border-radius: 6px;
+}
+
+.file-preview {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Modal Styling */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    text-align: center;
+}
+
+/* Modal image */
+.modal-content {
+    display: block;
+    margin: auto;
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Close button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close:hover {
+    color: #f03b3b;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container" id="complaintForm">
+        <button class="back-btn" onclick="goBack()">⬅ Back to Student Page</button>
+        <h2>Submit a Complaint</h2>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+          <div class="form-group">
+        <label for="category">Category:</label>
+        {{ form.category }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description:</label>
+            {{ form.description }}
+        </div>
+        
+        
+        <div class="form-group">
+            <label for="{{ form.file.id_for_label }}">Attach File (Optional):</label>
+            {{ form.file }}  <!-- This will render the file input field -->
+            <p class="file-preview" id="filePreview"></p>
+        </div>
+        
+        <button class="submit-btn" onclick="submitComplaint()">Submit Complaint</button>
+        </form>
+        <button class="view-btn" onclick="toggleComplaints()">Show Complaints</button>
+    </div>
+
+<div class="complaint-list" id="complaintList" style="display: none;">
+    <h2>Submitted Complaints</h2>
+    {% for complaint in complaints %}
+        <div class="complaint-item">
+            <p><strong>Category:</strong> {{ complaint.category }}</p>
+            <p><strong>Description:</strong> {{ complaint.description }}</p>
+            <p><strong>Submitted on:</strong> {{ complaint.timestamp }}</p>
+            {% if complaint.file %}
+                <p><strong>File:</strong> <a href="{{ complaint.file.url }}" target="_blank">Download</a></p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No complaints submitted yet.</p>
+    {% endfor %}
+</div>
+
+    <script>
+        let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+        document.getElementById("file").addEventListener("change", function() {
+            let file = this.files[0];
+            if (file) {
+                document.getElementById("filePreview").textContent = "Selected File: " + file.name;
+            } else {
+                document.getElementById("filePreview").textContent = "";
+            }
+        });
+
+        function toggleComplaints() {
+    let complaintList = document.getElementById("complaintList");
+
+    // Toggle visibility
+    if (complaintList.style.display === "none" || complaintList.style.display === "") {
+        complaintList.style.display = "block";
+    } else {
+        complaintList.style.display = "none";
+    }
+}
+function goBack() {
+        window.location.href = "{% url 'student' %}";  // Ensure 'student_page' is defined in your Django `urls.py`
+    }
+        
+    </script>
+</body>
+</html>

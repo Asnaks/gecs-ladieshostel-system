@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clerk Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #F8FAFC;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748B;
+            background: none;
+            border: none;
+            text-align: left;
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .menu button:hover, .menu button.active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .logout {
+            color: #DC2626;
+            text-decoration: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            
+        }
+        
+        /* Top Navbar */
+        .navbar {
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-icons span {
+            font-size: 20px;
+            cursor: pointer;
+            color: #2563EB;
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgb(48, 116, 242);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .btn {
+            background: #2563EB;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #1E40AF;
+        }
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #2563EB;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 50%;
+            border-radius: 5px;
+        }
+
+        .close {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        #profile {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+#profile h2 {
+    color: #2563EB;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#profile p {
+    font-size: 16px;
+    color: #333;
+    margin: 8px 0;
+}
+
+#profile button {
+    display: block;
+    background: #2563EB;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 15px auto 0;
+    transition: background 0.3s ease;
+}
+
+#profile button:hover {
+    background: #1E40AF;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <h1 class="logo">Welcome Clerk</h1> 
+            <div class="menu">
+                <button class="active" onclick="showSection('profile', this)">👤 Profile</button>
+                <button onclick="showSection('verify-student', this)">✅ Verify Student Data</button>
+                <button onclick="showSection('fee-payment', this)">💰 Fee Payment</button>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+    </div>
+
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="navbar">
+            <div class="nav-icons">
+                <span>🔔</span>
+                <div class="profile-container">
+                    <button class="profile-avatar" onclick="toggleProfileMenu()">🧑</button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+        <div id="profile" class="content-section active">
+            <h2>Profile Details</h2>
+            <p><strong>Name:</strong> Clerk Name</p>
+            <p><strong>Email:</strong> clerk@example.com</p>
+            <p><strong>Role:</strong> Clerk</p>
+            <button onclick="openModal()">View Full Profile</button>
+        </div>
+
+        <div id="verify-student" class="content-section">
+            <h2>Verify Student Data</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Course</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>John Doe</td>
+                    <td>12345</td>
+                    <td>Computer Science</td>
+                    <td>Pending</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="fee-payment" class="content-section">
+            <h2>Fee Payment Status</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Payment Status</th>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>67890</td>
+                    <td>Paid</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Full Profile</h2>
+            <p><strong>Name:</strong> Clerk Name</p>
+            <p><strong>Email:</strong> clerk@example.com</p>
+            <p><strong>Role:</strong> Clerk</p>
+            <p><strong>Department:</strong> Administration</p>
+            <p><strong>Phone:</strong> +1234567890</p>
+            <p><strong>Address:</strong> 123 Clerk Street, City</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleProfileMenu() {
+            var menu = document.getElementById("profileDropdown");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+        
+        function showSection(sectionId, button) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.menu button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        }
+
+        function logout() {
+            alert("Logged out successfully!");
+            // Add logout logic here, such as redirecting to a login page
+            window.location.href = "login.html"; // Example redirection
+        }
+        
+        function openModal() {
+            document.getElementById("profileModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("profileModal").style.display = "none";
+        }
+        
+        // Close the profile menu if clicked outside
+        document.addEventListener("click", function(event) {
+            var profileContainer = document.querySelector(".profile-container");
+            if (!profileContainer.contains(event.target)) {
+                document.getElementById("profileDropdown").style.display = "none";
+            
+            }
+        });
+            
+    </script>
+</body>
+</html>

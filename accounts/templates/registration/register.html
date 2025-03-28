@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 2px solid black;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        .logo-text {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #C13131;
+        }
+        .menu {
+            display: flex;
+            gap: 20px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .signup-btn {
+            color:#C13131;
+        }
+        .register-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+            margin-top: 80px;
+        }
+        .form-group {
+            margin-top: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #C13131;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #808080;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10x;
+            margin-top: 10px;
+        }
+        .custom-checkbox label {
+            
+            cursor: pointer;
+            font-weight:normal;
+        }
+        .custom-checkbox input {
+            width: 16px;
+            height : 16px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'Gec_Sreekrishnapuram_Logo.jpg' %}" alt="University Logo">
+            <div class="logo-text">Government Engineering College Palakkad, Sreekrishnapuram</div>
+        </div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Rules</a>
+            <a href="#">Mission</a>
+            <a href="#">Contact</a>
+            <a href="{% url 'login' %}" class="login-btn">Login</a>
+            <a href="{% url 'register' %}" class="signup-btn">Sign Up</a>
+        </div>
+    </div>
+    <div class="register-container">
+        <h2>Register</h2>
+
+        <!-- Display Form Errors -->
+        {% if form.errors %}
+            <div class="error">
+                <p>Please correct the following errors:</p>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="form-group">
+                <label for="password">Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+
+            <div class="form-group">
+                <label for="role">Select Your Role</label>
+
+                <div class="custom-checkbox">
+                    {{ form.is_student }}
+                    <label for="{{ form.is_student.id_for_label }}">Student</label>
+                </div>
+
+                <div class="custom-checkbox">
+                    {{ form.is_clerk }}
+                    <label for="{{ form.is_clerk.id_for_label }}">Clerk</label>
+                </div>
+
+                <div class="custom-checkbox">
+                    {{ form.is_matron }}
+                    <label for="{{ form.is_matron.id_for_label }}">Matron</label>
+                </div>
+
+                <div class="custom-checkbox">
+                    {{ form.is_warden }}
+                    <label for="{{ form.is_warden.id_for_label }}">Warden</label>
+                </div>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

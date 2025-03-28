@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            position: fixed;  /* Fix navbar at the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 2px solid black;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        .logo-text {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #C13131;
+        }
+        .sub-text {
+            font-size: 14px;
+            color: red;
+            font-weight: bold;
+        }
+        .menu {
+            display: flex;
+            gap: 20px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .signup-btn {
+            color:#C13131;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        .role-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+        .role-button {
+            background: #C13131;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .role-button.active {
+            background: #C13131;
+        }
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-top: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #C13131;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #C5BCBC;
+        }
+    </style>
+    <script>
+        function switchRole(role) {
+            document.querySelectorAll('.role-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(role).classList.add('active');
+
+            const adminOptions = document.getElementById('admin-options');
+            if (role === 'admin') {
+                adminOptions.classList.remove('hidden');
+            } else {
+                adminOptions.classList.add('hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'Gec_Sreekrishnapuram_Logo.jpg' %}" alt="University Logo"> 
+            <div>
+                <div class="logo-text">Government Engineering College Palakkad, Sreekrishnapuram</div>
+            </div>
+        </div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Rules</a>
+            <a href="#">Mission</a>
+            <a href="#">Contact</a>
+            <a href="{% url 'login' %}" class="login-btn">Login</a>
+            <a href="{% url 'register' %}" class="signin-btn">Sign Up</a>
+           
+        </div>
+    </div>
+    <div class="login-container">
+        <h2>Login to Account</h2>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group first">
+                <label for="username">Username</label>
+                  {{ form.username }}
+              </div>
+              <div class="form-group last mb-4">
+                <label for="username">Password</label>
+                {{ form.password }}
+              </div>
+            
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+</body>
+</html>

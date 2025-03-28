@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #F8FAFC;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748B;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .menu a:hover, .menu a.active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .logout {
+            color: #DC2626;
+            text-decoration: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-icons span {
+            font-size: 20px;
+            cursor: pointer;
+            color: #2563EB;
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgb(48, 116, 242);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 120px;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .profile-dropdown a:hover {
+            background: #f0f0f0;
+        }
+
+        /* Dashboard Content */
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <h1 class="logo">Student</h1> 
+            <div class="menu">
+                <a href="{% url 'student_profile' %}" class="active">👤 Profile</a>
+                <a href="{% url 'student_attendance' %}">📅 Attendance</a>
+                <a href="{% url 'student_mess' %}">🍽 Mess Marking</a>
+                <a href="{% url 'student_payment' %}">💰 Fee Payment</a>
+                <a href="{% url 'student_complaint' %}">📩 Complaint Box</a>
+
+            </div>
+        </div>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+    </div>
+<div class="main-content">
+    <div class="navbar">
+            <div class="nav-icons">
+                <span>🔔</span>
+                <div class="profile-container">
+                    <button class="profile-avatar" onclick="toggleProfileMenu()">🧑</button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dashboard Content -->
+        <div class="content" id="content-area">
+            <h2>Payment</h2>
+        </div>
+</div>
+<script>
+        function toggleProfileMenu() {
+            var menu = document.getElementById("profileDropdown");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }function loadContent(pageUrl) {
+        fetch(pageUrl, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("content-area").innerHTML = data;
+        })
+        .catch(error => console.error('Error loading content:', error));
+    }
+// Close the profile menu if clicked outside
+        document.addEventListener("click", function(event) {
+            var profileContainer = document.querySelector(".profile-container");
+            if (!profileContainer.contains(event.target)) {
+                document.getElementById("profileDropdown").style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDENT DETAILS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fbfafa;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width:1000px;
+            max-width:1200px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color:#276cb6;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            color:#385988;
+        }
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            
+    
+        }.section {
+            background: #f1f2f6;
+            padding: 20px;
+            border-radius: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(104, 106, 227, 0.05);
+        }
+        .section h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #276cb6;
+        }
+        h3.upload-title {
+    color:#276cb6; /* Change this color as needed */
+    font-weight: bold;
+       }
+        
+
+        .profile-container {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #ddd;
+            display: block;
+            margin: auto;
+            object-fit: cover;
+            border: 2px solid #ccc;
+            cursor: pointer;
+        }
+        .profile-container input {
+            display: none;
+        }
+        .dob-age-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px; /* Adds space between inputs */
+    }
+    .dob-age-container div {
+        flex: 1; /* Makes both fields equally wide */
+    }
+    .dob-age-container input {
+        width: 100%; /* Ensures inputs take full width of their container */
+    }
+    .religion-caste-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px; /* Adds space between Religion and Caste fields */
+    }
+    .religion-caste-container div {
+        flex: 1; /* Makes both fields equally wide */
+    }
+    .religion-caste-container select {
+        width: 100%; /* Ensures dropdowns take full width of their container */
+    }
+    .course-dept-sem-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Adds spacing between the fields */
+}
+
+.course-dept-sem-container div {
+    flex: 1; /* Makes each field take equal width */
+}
+
+.course-dept-sem-container select {
+    width: 100%; /* Ensures dropdowns take full width of their container */
+}
+.address-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+.address-container div {
+    flex: 1; /* Ensures equal width for all fields */
+}
+
+.address-container input {
+    width: 100%; /* Makes input fields take full width of their div */
+}
+.container {
+            background: #fbfafa;
+            
+            border-radius: 0px;
+            
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .btn {
+            width: 140px;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin: 10px;
+        }
+
+        .btn-save {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #1e7e34;
+            transform: scale(1.05);
+        }
+
+        /* Success Message Box */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+            transition: all 0.4s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .message-icon {
+            font-size: 20px;
+        }
+
+        .success {
+            border-left: 5px solid #28a745;
+        }
+
+        .error {
+            border-left: 5px solid #dc3545;
+        }
+
+        .info {
+            border-left: 5px solid #007bff;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="form-container">
+        <h2>STUDENT DETAILS</h2>
+        <form method="POST" action="{% url 'student_data' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 class="upload-title">Upload Profile Picture</h3>
+            <div class="profile-container">
+                <label for="{{ form.profile_picture.id_for_label }}">
+                    <img id="profile-pic" src="https://via.placeholder.com/120" alt="Profile" class="profile-pic">
+                </label>
+                
+                {{ form.profile_picture }}  <!-- Keep only this, as Django handles it -->
+            </div>
+    <div class="section">
+            <div class="form-group">
+                <label for="full name">Full Name:</label>
+                {{ form.full_name }}
+            </div>
+            <div class="form-group">
+                <label for="admission_number">Admission Number:</label>
+                {{ form.admission_number }}
+            </div>
+            <div class="form-group">
+                <label for="register_number">Register Number:</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="email">Email ID:</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group dob-age-container">
+                <div>
+                    <label for="dob" id="dob">Date of Birth:</label>
+                    {{ form.dob }}
+                </div>
+                <div>
+                    <label for="age" id="age">Age:</label>
+                    {{ form.age }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="'adhar">Aadhar Number:</label>
+                {{ form.aadhar_number }}
+            </div>
+            <div class="form-group">
+                <label for="mobileno">Mobile Number:</label>
+                {{ form.mobile_number }}
+            </div>
+            <div class="form-group religion-caste-container">
+                <div>
+                    <label for="religion">Religion:</label>
+                    {{ form.religion }}
+                </div>
+                <div>
+                    <label for="caste">Caste:</label>
+                    {{ form.caste }}
+                </div>
+            </div>
+            <div class="form-row">
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    {{ form.category }}
+                </div>
+            
+                <!-- Annual Income -->
+                <div class="form-group">
+                    <label for="annual-income">Annual Income:</label>
+                    {{ form.annual_income}}
+                </div>
+            </div>
+            <div class="form-group course-dept-sem-container">
+                <div>
+                    <label for='id_course' name="course" id="id_course">Enrolled Course:</label>
+                    {{ form.course |add_class:"form-control" }}
+                </div>
+                <div>
+                    <label for="id_department" id="id_department">Department:</label>
+                    {{ form.department  }}
+                </div>
+                <div>
+                    <label for="id_semester" id="id_semester">Semester:</label>
+                    {{ form.semester  }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                {{ form.address }}
+            </div>
+            <div class="form-group address-container">
+                <div>
+                    <label for="pincode">Pincode:</label>
+                    {{ form.pincode }}
+                </div>
+                <div>
+                    <label for="District">District:</label>
+                    {{ form.district }}
+                </div>
+                <div>
+                    <label for="state">State:</label>
+                    {{ form.state }}
+                </div>
+            
+            <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                {{ form.nationality }}
+            </div>
+            </div>
+            </div>
+
+            
+
+            <div class="section">
+                <h3>Father's Details</h3>
+                <div class="form-group"><label for="name">Name</label>{{ form.father_name }}</div>
+                <div class="form-group"><label for="occupation">Occupation</label>{{ form.father_occupation }}</div>
+                <div class="form-group"><label for='address'>Address:</label> {{ form.father_addresss }}</div>
+                <div class="form-group"><label for="mobile">Mobile</label>{{ form.father_mobile }}</div>
+                <div class="form-group"><label for="emailid">Email ID:</label>{{ form.father_email }}</div>
+            </div>
+            
+            <div class="section">
+                <h3>Mother's Details</h3>
+                <div class="form-group"><label for="name">Name</label>{{ form.mother_name }}</div>
+                <div class="form-group"><label for="occupation">Occupation</label>{{ form.mother_occupation }}</div>
+                <div class="form-group"><label for='address'>Address:</label> {{ form.mother_addresss }}</div>
+                <div class="form-group"><label for="mobile">Mobile</label>{{ form.mother_mobile }}</div>
+                <div class="form-group"><label for="emailid">Email ID:</label>{{ form.mother_email }}</div>
+            </div>
+            
+            <div class="section">
+                <h3>Guardian's Details</h3>
+                <div class="form-group"><label for="name">Name</label>{{ form.guardian_name }}</div>
+                <div class="form-group"><label for="occupation">Occupation</label>{{ form.guardian_occupation }}</div>
+                <div class="form-group"><label for='address'>Address:</label> {{ form.guardian_addresss }}</div>
+                <div class="form-group"><label for="mobile">Mobile</label>{{ form.guardian_mobile }}</div>
+                <div class="form-group"><label for="emailid">Email ID:</label>{{ form.guardian_email }}</div>  
+            </div>
+
+            <!-- Document Uploads -->
+            <h3 class="upload-title">Upload Documents</h3>
+            <div class="form-group">
+                <label for="{{ form.ration_document.id_for_label }}">Ration Card (PDF):</label>
+                {{ form.ration_document }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.aadhar_document.id_for_label }}">Aadhar Card (PDF):</label>
+                {{ form.aadhar_document }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.income_certificate.id_for_label }}">Income Certificate (PDF):</label>
+                {{ form.income_certificate }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.caste_documents.id_for_label }}">Caste Certificate (PDF):</label>
+                {{ form.caste_documents }}
+            </div>
+
+            
+        
+    </div>
+    <div class="container">
+        
+        <button class="btn btn-submit" type="submit" onclick="showMessage('📩 Data Submitted Successfully!', 'info')">Submit</button>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+</form>
+<script>
+    function previewProfilePicture(event) {
+    var input = event.target;
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById("profile-pic").src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let dobField = document.querySelector("input[name='dob']");
+        let ageField = document.querySelector("input[name='age']");
+
+        dobField.addEventListener("change", function () {
+            let dob = this.value;
+            if (dob) {
+                ageField.value = calculateAge(dob);
+            }
+        });
+
+        function calculateAge(dob) {
+            let birthDate = new Date(dob);
+            let today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+
+            if (
+                today.getMonth() < birthDate.getMonth() ||
+                (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
+            ) {
+                age--;
+            }
+            return age;
+        }
+    });
+    
+    function showMessage(message, type) {
+        let messageBox = document.getElementById("messageBox");
+        messageBox.innerHTML = message;
+        
+        messageBox.className = "message-box show " + type;
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+            messageBox.className = "message-box";
+        }, 3000);
+    }
+</script>
+</body>
+   
+</html>

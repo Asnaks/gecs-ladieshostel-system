@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        html, body {
+    overflow: auto;
+}
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #F8FAFC;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748B;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .menu a:hover, .menu a.active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .logout {
+            color: #DC2626;
+            text-decoration: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-icons span {
+            font-size: 20px;
+            cursor: pointer;
+            color: #2563EB;
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgb(48, 116, 242);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 120px;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .profile-dropdown a:hover {
+            background: #f0f0f0;
+        } 
+        .content {
+            margin-left: 5px; /* Space for sidebar */
+            margin-top: 10px; /* Space for navbar */
+            width: calc(100% - 5px); /* Full width after sidebar */
+            height: calc(100vh - 10px);
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            min-height: 100vh; /* Ensures full height */
+            overflow:  auto;
+        }
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            gap: 20px; /* Adjust spacing */
+            max-width: 100%;
+        }
+
+        .form-container label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Adjust form layout */
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            overflow: visible;
+        }
+
+        /* Make fields responsive */
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            grid-column: span 2;
+            background: #007BFF;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+        .profiles-container {
+            text-align: center; /* Ensures content inside is centered */
+        }
+        .profile-picture {
+            display: block;
+            margin: 0 auto; /* Centers the image horizontally */
+            width: 100px; /* Adjust size */
+            height: 100px;
+            border-radius: 50%; /* Circular shape */
+            object-fit: cover; /* Ensures image fills the circle */
+            border: 3px solid #ccc; /* Optional border */
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <h1 class="logo">Welcome {{student.full_name}}</h1> 
+            <div class="menu">
+                <a href="{% url 'student' %}" class="active">👤 Profile</a>
+                <a href="{% url 'student_attendance' %}">📅 Attendance</a>
+                <a href="{% url 'student_mess' %}">🍽 Mess Marking</a>
+                <a href="{% url 'student_payment' %}">💰 Fee Payment</a>
+                <a href="{% url 'student_complaint' %}">📩 Complaint Box</a>
+
+            </div>
+        </div>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+    </div>
+<div class="main-content">
+    <div class="navbar">
+            <div class="nav-icons">
+                <span>🔔</span>
+                <div class="profile-container">
+                    <button class="profile-avatar" onclick="toggleProfileMenu()">🧑</button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dashboard Content -->
+        <div class="content" id="content-area">
+
+            <h2>{{student.full_name}}</h2>
+            <form method="POST" action="{% url 'student_profile' %}"enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="profiles-container">
+                    <label for="profile_picture">Profile Photo</label>
+                    <img src="{{ student.profile_picture.url }}" alt="Profile" class="profile-picture">
+                </div>
+                
+                <div>
+                    <label for="full_name">Full Name:</label>
+                    <input type="text" id="full_name" name="full_name" value="{{ student.full_name }}" required>
+                </div>
+                
+                <div>
+                    <label for="admission_number">Admission Number:</label>
+                    <input type="text" id="admission_number" name="admission_number" value="{{ student.admission_number }}" required>
+                </div>
+                
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="{{ student.username }}" required>
+                </div>
+                
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="{{ student.email }}" required>
+                </div>
+                
+                <div>
+                    <label for="dob">Date of Birth:</label>
+                    <input type="date" id="dob" name="dob" value="{{ student.dob|date:'Y-m-d' }}" required>
+                </div>
+                
+                <div>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" value="{{ student.age }}" required>
+                </div>
+                
+                <div>
+                    <label for="aadhar_number">Aadhar Number:</label>
+                    <input type="text" id="aadhar_number" name="aadhar_number" value="{{ student.aadhar_number }}" required>
+                </div>
+                
+                <div>
+                    <label for="mobile_number">Mobile Number:</label>
+                    <input type="text" id="mobile_number" name="mobile_number" value="{{ student.mobile_number }}" required>
+                </div>
+                
+                <div>
+                    <label for="religion">Religion:</label>
+                    <input type="text" id="religion" name="religion" value="{{ student.religion }}" required>
+                </div>
+                
+                <div>
+                    <label for="caste">Caste:</label>
+                    <input type="text" id="caste" name="caste" value="{{ student.caste }}" required>
+                </div>
+                
+                <div>
+                    <label for="category">Category:</label>
+                    <input type="text" id="category" name="category" value="{{ student.category }}" required>
+                </div>
+                
+                <div>
+                    <label for="annual_income">Annual Income:</label>
+                    <input type="number" id="annual_income" name="annual_income" value="{{ student.annual_income }}" required>
+                </div>
+                
+                <div>
+                    <label for="course">Course:</label>
+                    <input type="text" id="course" name="course" value="{{ student.course }}" required>
+                </div>
+                
+                <div>
+                    <label for="department">Department:</label>
+                    <input type="text" id="department" name="department" value="{{ student.department }}" required>
+                </div>
+                
+                <div>
+                    <label for="semester">Semester:</label>
+                    <input type="text" id="semester" name="semester" value="{{ student.semester }}" required>
+                </div>
+                
+                <div>
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address">{{ student.address }}</textarea>
+                </div>
+                
+                <div>
+                    <label for="pincode">Pincode:</label>
+                    <input type="number" id="pincode" name="pincode" value="{{ student.pincode }}" required>
+                </div>
+                
+                <div>
+                    <label for="district">District:</label>
+                    <input type="text" id="district" name="district" value="{{ student.district }}" required>
+                </div>
+                
+                <div>
+                    <label for="state">State:</label>
+                    <input type="text" id="state" name="state" value="{{ student.state }}" required>
+                </div>
+                
+                <div>
+                    <label for="nationality">Nationality:</label>
+                    <input type="text" id="nationality" name="nationality" value="{{ student.nationality }}" required>
+                </div>
+                
+                
+                
+                <!-- Father's Details -->
+                <div>
+                    <label for="father_name">Father's Name:</label>
+                    <input type="text" id="father_name" name="father_name" value="{{ student.father_name }}" required>
+                </div>
+                
+                <div>
+                    <label for="father_occupation">Father's Occupation:</label>
+                    <input type="text" id="father_occupation" name="father_occupation" value="{{ student.father_occupation }}">
+                </div>
+                
+                <div>
+                    <label for="father_address">Father's Address:</label>
+                    <input type="text" id="father_address" name="father_address" value="{{ student.father_addresss }}">
+                </div>
+                
+                <div>
+                    <label for="father_mobile">Father's Mobile:</label>
+                    <input type="text" id="father_mobile" name="father_mobile" value="{{ student.father_mobile }}" required>
+                </div>
+                
+                <div>
+                    <label for="father_email">Father's Email:</label>
+                    <input type="email" id="father_email" name="father_email" value="{{ student.father_email }}">
+                </div>
+                
+                <!-- Mother's Details -->
+                <div>
+                    <label for="mother_name">Mother's Name:</label>
+                    <input type="text" id="mother_name" name="mother_name" value="{{ student.mother_name }}">
+                </div>
+                
+                <div>
+                    <label for="mother_occupation">Mother's Occupation:</label>
+                    <input type="text" id="mother_occupation" name="mother_occupation" value="{{ student.mother_occupation }}">
+                </div>
+                
+                <div>
+                    <label for="mother_address">Mother's Address:</label>
+                    <input type="text" id="mother_address" name="mother_address" value="{{ student.mother_addresss }}">
+                </div>
+                
+                <div>
+                    <label for="mother_mobile">Mother's Mobile:</label>
+                    <input type="text" id="mother_mobile" name="mother_mobile" value="{{ student.mother_mobile }}">
+                </div>
+                
+                <div>
+                    <label for="mother_email">Mother's Email:</label>
+                    <input type="email" id="mother_email" name="mother_email" value="{{ student.mother_email }}">
+                </div>
+                
+                <!-- Guardian's Details -->
+                <div>
+                    <label for="guardian_name">Guardian's Name:</label>
+                    <input type="text" id="guardian_name" name="guardian_name" value="{{ student.guardian_name }}" required>
+                </div>
+                
+                <div>
+                    <label for="guardian_address">Guardian's Address:</label>
+                    <input type="text" id="guardian_address" name="guardian_address" value="{{ student.guardian_addresss }}" required>
+                </div>
+                
+                <div>
+                    <label for="guardian_occupation">Guardian's Occupation:</label>
+                    <input type="text" id="guardian_occupation" name="guardian_occupation" value="{{ student.guardian_occupation }}">
+                </div>
+                
+                <div>
+                    <label for="guardian_mobile">Guardian's Mobile:</label>
+                    <input type="text" id="guardian_mobile" name="guardian_mobile" value="{{ student.guardian_mobile }}" required>
+                </div>
+                
+                <div>
+                    <label for="guardian_email">Guardian's Email:</label>
+                    <input type="email" id="guardian_email" name="guardian_email" value="{{ student.guardian_email }}" required>
+                </div>
+                
+                <!-- Upload Documents -->
+                <div>
+                    <label for="ration_document">Ration Card:</label>
+                    {% if student.ration_document %}
+                    <a href="{{ student.ration_document.url }}" target="_blank">View File</a>
+                    {% else %}
+                    <p>No document uploaded</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="aadhar_document">Aadhar Card:</label>
+                    {% if student.aadhar_document %}
+                    <a href="{{ student.aadhar_document.url }}" target="_blank">View File</a>
+                    {% else %}
+                    <p>No document uploaded</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="income_certificate">Income Certificate:</label>
+                    {% if student.income_certificate %}
+                    <a href="{{ student.income_certificate.url }}" target="_blank">View File</a>
+                    {% else %}
+                    <p>No document uploaded</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="caste_documents">Caste Certificate:</label>
+                    {% if student.caste_documents %}
+                    <a href="{{ student.caste_documents.url }}" target="_blank">View File</a>
+                    {% else %}
+                    <p>No document uploaded</p>
+                    {% endif %}
+                </div>
+                
+                <button type="submit">Update</button>
+            </form>    
+                 
+        </div>
+</div>
+<script>
+        function toggleProfileMenu() {
+            var menu = document.getElementById("profileDropdown");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }function loadContent(pageUrl) {
+        fetch(pageUrl, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("content-area").innerHTML = data;
+        })
+        .catch(error => console.error('Error loading content:', error));
+    }
+// Close the profile menu if clicked outside
+        document.addEventListener("click", function(event) {
+            var profileContainer = document.querySelector(".profile-container");
+            if (!profileContainer.contains(event.target)) {
+                document.getElementById("profileDropdown").style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

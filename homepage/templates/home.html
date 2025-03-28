@@ -1,0 +1,446 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Ladies Hostel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5f5; /* Light gray background instead of image */
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #fff;
+            border-bottom: 2px solid black;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #C13131;
+        }
+        .menu {
+            display: flex;
+            gap: 15px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 5px 10px;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        .menu a:hover {
+            color: white;
+            background-color: #C13131;
+            border-radius: 5px;
+        }
+        .signin-btn {
+            color: #C13131;
+            font-weight: bold;
+        }
+        
+        /* Header with image background */
+        .header-banner {
+            background-image: url('{% static "lh.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        /* Notifications & Forms Styles */
+        .notification-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 20px;
+        }
+        .section {
+            width: 48%;
+        }
+        h2 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .content-box {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .content-box::-webkit-scrollbar {
+            width: 5px;
+        }
+        .content-box::-webkit-scrollbar-thumb {
+            background-color: #e74c3c;
+            border-radius: 10px;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .date-badge {
+            background: #e74c3c;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            align-self: flex-start;
+            margin-bottom: 10px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .card-link {
+            color: #e74c3c;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .card-link:hover {
+            text-decoration: underline;
+        }
+        
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Light background */
+            color: #333; /* Dark text */
+        }
+        .about-section {
+            max-width: 900px; /* Limit content width */
+            margin: 50px auto; /* Center the container */
+            padding: 0 20px;   /* Side padding for smaller screens */
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            line-height: 1.6; /* Comfortable line spacing */
+        }
+        .about-section h2 {
+            font-size: 28px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .about-section p {
+            font-size: 16px;
+            margin-bottom: 16px;
+            padding: 0 20px;
+            text-align: justify; /* Neater text alignment */
+        }
+        /* Hostel Rules Styles */
+        .rules-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+        .rules-box {
+            width: 40%;
+            padding: 40px;
+            background-color: #fdf6d5; /* Light Yellow Background */
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+        }
+        .rules-box h1 {
+            font-size: 50px;
+            color: #5a3b1c;
+            margin: 0;
+        }
+        .rules-box p {
+            font-size: 14px;
+            color: #6e6e6e;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .rules-list {
+            width: 60%;
+            padding: 40px;
+        }
+        .rules-list ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .rules-list ul li {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .rules-list a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .rules-list a:hover {
+            text-decoration: underline;
+        }
+        
+  
+
+        /* Contact Section */
+        .contact-container {
+            max-width: 900px;
+            margin: 50px auto; /* Centers horizontally */
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            align-items:center;
+            flex-wrap :wrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers content vertically */
+            justify-content: center;
+        }
+
+        .contact-container h1 {
+            font-size: 28px;
+            color: #C13131;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .info-box {
+            background: #fff;
+            padding: 15px;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .info-box h2 {
+            font-size: 20px;
+            color: #C13131;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            font-size: 16px;
+            color: #333;
+            margin: 5px 0;
+        }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .contact-info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-box {
+        width: 80%;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'Gec_Sreekrishnapuram_Logo.jpg' %}" alt="College Logo">
+            <div class="logo-text">Government Engineering College Palakkad, Sreekrishnapuram</div>
+        </div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Rules</a>
+            <a href="#">Mission</a>
+            <a href="#">Contact</a>
+            <a href="{% url 'login' %}">Login</a> 
+            <a href="{% url 'register' %}" class="signin-btn">SignUp</a>
+             
+        </div>
+    </div>
+    
+    <!-- Header banner with image background -->
+    <div class="header-banner">
+        <div class="header-overlay"></div>
+        <div class="content">
+            <h1>Welcome to Ladies Hostel</h1>
+            <p>A secure and comfortable stay for students.</p>
+        </div>
+    </div>
+    
+    <!-- Notifications & Forms Section -->
+    <div class="notification-container">
+        <div class="container">
+            <!-- Notifications Section -->
+            <div class="section">
+                <h2>Notifications</h2>
+                <div class="content-box">
+                    <div class="card">
+                        <span class="date-badge">2024-10-19</span>
+                        <div class="card-title">Revised rules of Ladies Hostels.</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <span class="date-badge">2024-07-09</span>
+                        <div class="card-title">Hostel Allotment Instructions for PG First Year Students</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <span class="date-badge">2024-05-20</span>
+                        <div class="card-title">Hostel Admission Notification 2024-25</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <span class="date-badge">2024-03-10</span>
+                        <div class="card-title">The Trial allotment for the year 2024-25 is published</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forms Section -->
+            <div class="section">
+                <h2>Forms</h2>
+                <div class="content-box">
+                    <div class="card">
+                        <div class="card-title">Inmate Form</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Guest form</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Clearance Form</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Transfer Request</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Room Change Form</div>
+                        <a href="#" class="card-link">open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--aboutsection-->
+        
+  <div class="about-section">
+    <h2>About</h2>
+    <p>
+        About GEC Palakkad
+        Government Engineering College Palakkad, Sreekrishnapuram is a premier educational institute established in 1999. It is situated in Palakkad district of Kerala. The college is fully owned by Govt.of Kerala and is under the Directorate of Technical Education, Kerala. GEC Sreekrishnapuram is approved by the AICTE and is affiliated to APJ Abdul kalam Technological University (from 2015 onwards
+    <p>
+        The college have  one ladies hostel with capacity 130 each. These hostels are headed by the warden assisted by Resident Tutors. Prof. Sabitha, HoD of CSE is in charge of ladies hostel . Messes are run on dividing system and there is provision for vegetarian and non- vegetarian messes. The hostel inmates are expected to follow the hostel rules strictly and as directed by warden and resident tutors.
+    </p>
+  </div>
+        <!-- Hostel Rules Section -->
+        <div class="rules-container">
+            <!-- Left Box -->
+            <div class="rules-box">
+                <h1>HOSTEL RULES</h1>
+                
+            </div>
+
+            <!-- Right Content -->
+            <div class="rules-list">
+                <ul>
+                    <li>Hostels  will remain closed during summer vacation.</li>
+                    <li>The hostel shall be under direct control of warden and warden's decisions shall be final in interpreting rules in all matters connected with the hostel.
+                    <li>Students must submit a Clearance Form before vacating the hostel.</li>
+                    <li>Final-year students must submit Form C after clearing dues.</li>
+                    <li>Students residing more than 25 km away are eligible.</li>
+                    <li><a href="{% static 'docs/Hostel rules.pdf' %}" class="card-link" target="_blank">More</a>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--contact us-->
+    <div class="contact-container">
+        <h1>Contact Us</h1>
+        <!-- Add your logo here -->
+        <div class="contact-info">
+            <div class="info-box">
+                <h2>Ladies Hostel Warden</h2>
+                <p>Dr. Sabitha S, HOD CSE</p>
+                <p>wardenlh@gecskp.ac.in, sabithas@gecskp.ac.in</p>
+                <p>9497686588</p>
+            </div>
+            <div class="info-box">
+                <h2>Assistant Warden</h2>
+                <p>Smt. Kala M T, AP CSE</p>
+                <p>kalamt@gecskp.ac.in</p>
+                <p>9495359069</p>
+            </div>
+            <div class="info-box">
+                <h2>Clerk</h2>
+                <p>Not Available</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
