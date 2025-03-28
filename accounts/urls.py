@@ -14,4 +14,7 @@ urlpatterns = [
     path('mess/', views.mess_view, name='student_mess'),
     path('payment/', views.payment_view, name='student_payment'),
     path('complaint/', views.complaint_system, name='student_complaint'),
+    path('student_messcom/', views.student_messcom, name='student_messcom'),
+    path('warden_committe/', views.warden_committe, name='warden_committe'),
+    path('warden_complaint/', views.warden_complaint, name='warden_complaint'),
 ]

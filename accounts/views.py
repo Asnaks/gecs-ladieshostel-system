@@ -106,7 +106,7 @@ def matron(request):
 @login_required
 def profile_view(request):
     student = Student.objects.get(username=request.user.username)  # Fetch student using registration number
-    complaints = Complaint.objects.filter(student=student).order_by('-timestamp')
+    #complaints = Complaint.objects.filter(student=student).order_by('-timestamp')
 
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES, instance=student)  # Include FILES if profile pic is updated
@@ -128,6 +128,19 @@ def mess_view(request):
 @login_required
 def payment_view(request):
     return render(request, 'dashboard/student_payment.html')
+
+@login_required
+def student_messcom(request):
+    return render(request,'dashboard/student_messcom.html')
+
+@login_required
+def warden_committe(request):
+    return render(request,'dashboard/warden_committe.html')
+
+
+@login_required
+def warden_complaint(request):
+    return render(request,'dashboard/warden_complaint.html')
 
 @login_required
 def complaint_system(request):

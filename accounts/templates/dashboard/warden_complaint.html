@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warden Complaint Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ffffff, #f4f4f4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 500px;
+            text-align: center;
+        }
+        h2 { color: #333; }
+        .complaint-item {
+            border-bottom: 2px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        select, button {
+            padding: 12px 16px;
+            margin: 8px 5px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        select { width: 100%; }
+        .save-btn {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+        }
+        .save-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003e7e);
+            transform: translateY(-2px);
+        }
+        .reset-btn {
+            background: linear-gradient(135deg, #DC3545, #A71D2A);
+            color: white;
+        }
+        .reset-btn:hover {
+            background: linear-gradient(135deg, #A71D2A, #7A0E1B);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>complaints</h2>
+        <div id="complaintsContainer"></div>
+    </div>
+
+    <script>
+        let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+        function displayComplaints() {
+            let complaintsContainer = document.getElementById("complaintsContainer");
+            complaintsContainer.innerHTML = "";
+            
+            if (complaints.length === 0) {
+                complaintsContainer.innerHTML = "<p>No complaints available.</p>";
+                return;
+            }
+            
+            complaints.forEach((complaint, index) => {
+                let complaintItem = document.createElement("div");
+                complaintItem.className = "complaint-item";
+                
+                complaintItem.innerHTML = `
+                    <p><strong>Category:</strong> ${complaint.category}</p>
+                    <p><strong>Description:</strong> ${complaint.description}</p>
+                    <p><strong>Submitted on:</strong> ${complaint.timestamp}</p>
+                    <p><strong>Status:</strong> 
+                        <select id="status-${index}">
+                            <option value="Pending" ${complaint.status === "Pending" ? "selected" : ""}>Pending</option>
+                            <option value="In Progress" ${complaint.status === "In Progress" ? "selected" : ""}>In Progress</option>
+                            <option value="Resolved" ${complaint.status === "Resolved" ? "selected" : ""}>Resolved</option>
+                        </select>
+                    </p>
+                    <button class="save-btn" onclick="updateStatus(${index})">Save</button>
+                    <button class="reset-btn" onclick="resetStatus(${index})">Reset</button>
+                `;
+                complaintsContainer.appendChild(complaintItem);
+            });
+        }
+
+        function updateStatus(index) {
+            let selectElement = document.getElementById(status-${index});
+            let newStatus = selectElement.value;
+            
+            complaints[index].status = newStatus;
+            localStorage.setItem("complaints", JSON.stringify(complaints));
+
+            alert("Status updated successfully");
+        }
+
+        function resetStatus(index) {
+            let selectElement = document.getElementById(status-${index});
+            selectElement.value = "Pending"; // Set dropdown to "Pending"
+
+            complaints[index].status = "Pending"; // Update array
+            localStorage.setItem("complaints", JSON.stringify(complaints)); // Save in localStorage
+
+            alert("Status reset to Pending");
+        }
+
+        displayComplaints();
+    </script>
+</body>
+</html>

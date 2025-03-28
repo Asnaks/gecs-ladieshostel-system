@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warden Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #F8FAFC;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748B;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .menu a:hover, .menu a.active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .logout {
+            color: #DC2626;
+            text-decoration: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgb(48, 116, 242);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 120px;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .content {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+       
+        {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background: white;
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+h2 {
+    font-size: 20px;
+    color: #555;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #007BFF;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div>
+            <h1 class="logo">Warden</h1> 
+            <div class="menu">
+                <a href="{% url 'warden' %}">👤 Profile</a>
+                <a href="#" class="active">🏠 Mess Committee</a>
+                <a href="#">💰 Fee Details</a>
+                <a href="#">📩 Grievance</a>
+                <a href="#">📚 Student Details</a>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="navbar">
+            <div class="nav-icons">
+                <span>🔔</span>
+                <div class="profile-container">
+                    <button class="profile-avatar" onclick="toggleProfileMenu()">🧑</button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+           
+        
+         <div class="container">
+        <h1>Warden's Mess Committee Management</h1>
+        <button id="createCommitteeBtn">Create Mess Committee</button>
+        <h2>Mess Committee for <span id="monthName"></span></h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Register Number</th>
+                    <th>Name</th>
+                    <th>Mobile Number</th>
+                </tr>
+            </thead>
+            <tbody id="committeeTable">
+                <!-- Selected members will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+    </div>
+
+    <script>
+           const students = [
+    { regNo: "202301", name: "Aarav Sharma", mobile: "9876543210" },
+    { regNo: "202302", name: "Ishita Mehta", mobile: "8765432109" },
+    { regNo: "202303", name: "Raj Patel", mobile: "7654321098" },
+    { regNo: "202304", name: "Ananya Verma", mobile: "6543210987" },
+    { regNo: "202305", name: "Karan Singh", mobile: "5432109876" },
+    { regNo: "202306", name: "Neha Kapoor", mobile: "4321098765" },
+    { regNo: "202307", name: "Rohit Choudhary", mobile: "3210987654" },
+    { regNo: "202308", name: "Pooja Das", mobile: "2109876543" },
+    { regNo: "202309", name: "Manav Gupta", mobile: "1098765432" },
+    { regNo: "202310", name: "Tanya Roy", mobile: "9876543211" },
+    { regNo: "202311", name: "Aditya Rao", mobile: "8765432108" },
+    { regNo: "202312", name: "Sanya Malik", mobile: "7654321097" },
+    { regNo: "202313", name: "Vikas Pandey", mobile: "6543210986" },
+    { regNo: "202314", name: "Simran Kaur", mobile: "5432109875" }
+];
+
+// Get current month name
+function getCurrentMonth() {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    return monthNames[new Date().getMonth()];
+}
+
+// Retrieve previously selected members from localStorage
+function getPreviousCommittees() {
+    return JSON.parse(localStorage.getItem("committeeData")) || {};
+}
+
+// Save selected members for the current month
+function saveCommittee(members) {
+    let committeeData = getPreviousCommittees();
+    committeeData[getCurrentMonth()] = members;
+    localStorage.setItem("committeeData", JSON.stringify(committeeData));
+}
+
+// Function to create a new mess committee
+function createMessCommittee() {
+    let previousCommittees = getPreviousCommittees();
+    let selectedThisMonth = previousCommittees[getCurrentMonth()] || [];
+
+    // Get available students who were not selected previously
+    let previouslySelected = Object.values(previousCommittees).flat().map(s => s.regNo);
+    let availableStudents = students.filter(student => !previouslySelected.includes(student.regNo));
+
+    if (availableStudents.length < 10) {
+        alert("Not enough new students available! Resetting selection.");
+        availableStudents = [...students]; // Reset if all students were selected
+    }
+
+    // Shuffle and pick 10 students
+    let shuffled = availableStudents.sort(() => Math.random() - 0.5);
+    let committeeMembers = shuffled.slice(0, 10);
+
+    // Save new committee to localStorage
+    saveCommittee(committeeMembers);
+
+    // Display committee
+    displayCommittee();
+}
+
+// Function to display selected committee members
+function displayCommittee() {
+    const committeeTable = document.getElementById("committeeTable");
+    const monthNameElement = document.getElementById("monthName");
+
+    // Get stored committee data for the current month
+    const members = getPreviousCommittees()[getCurrentMonth()] || [];
+    monthNameElement.textContent = getCurrentMonth(); // Show current month
+
+    // Clear previous data
+    committeeTable.innerHTML = "";
+
+    if (members.length === 0) {
+        committeeTable.innerHTML = "<tr><td colspan='3'>No committee selected yet.</td></tr>";
+        return;
+    }
+
+    // Append members to the table
+    members.forEach(student => {
+        let row = `<tr>
+            <td>${student.regNo}</td>
+            <td>${student.name}</td>
+            <td>${student.mobile}</td>
+        </tr>`;
+        committeeTable.innerHTML += row;
+    });
+}
+
+// Load committee members when the page loads
+document.addEventListener("DOMContentLoaded", displayCommittee);
+
+// Event listener for create committee button
+document.getElementById("createCommitteeBtn").addEventListener("click", createMessCommittee);
+    </script>
+</body>
+</html>
