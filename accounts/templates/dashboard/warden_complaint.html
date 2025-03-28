@@ -101,24 +101,25 @@
         }
 
         function updateStatus(index) {
-            let selectElement = document.getElementById(status-${index});
-            let newStatus = selectElement.value;
-            
-            complaints[index].status = newStatus;
-            localStorage.setItem("complaints", JSON.stringify(complaints));
+    let selectElement = document.getElementById(`status-${index}`);
+    let newStatus = selectElement.value;
+    
+    complaints[index].status = newStatus;
+    localStorage.setItem("complaints", JSON.stringify(complaints));
 
-            alert("Status updated successfully");
-        }
+    alert("Status updated successfully");
+}
 
-        function resetStatus(index) {
-            let selectElement = document.getElementById(status-${index});
-            selectElement.value = "Pending"; // Set dropdown to "Pending"
+function resetStatus(index) {
+    let selectElement = document.getElementById(`status-${index}`);
+    selectElement.value = "Pending"; // Set dropdown to "Pending"
 
-            complaints[index].status = "Pending"; // Update array
-            localStorage.setItem("complaints", JSON.stringify(complaints)); // Save in localStorage
+    complaints[index].status = "Pending"; // Update array
+    localStorage.setItem("complaints", JSON.stringify(complaints)); // Save in localStorage
 
-            alert("Status reset to Pending");
-        }
+    alert("Status reset to Pending");
+}
+
 
         displayComplaints();
     </script>

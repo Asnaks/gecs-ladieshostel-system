@@ -106,7 +106,7 @@ def matron(request):
 @login_required
 def profile_view(request):
     student = Student.objects.get(username=request.user.username)  # Fetch student using registration number
-    #complaints = Complaint.objects.filter(student=student).order_by('-timestamp')
+    
 
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES, instance=student)  # Include FILES if profile pic is updated

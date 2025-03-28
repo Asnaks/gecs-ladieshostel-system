@@ -3,128 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warden Dashboard</title>
+    <title>Warden's Mess Committee</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
         body {
-            display: flex;
-            height: 100vh;
-            background-color: #F8FAFC;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: white;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2563EB;
-        }
-
-        .menu {
-            margin-top: 20px;
-        }
-
-        .menu a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #64748B;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .menu a:hover, .menu a.active {
-            background: #E0F2FE;
-            color: #0369A1;
-        }
-
-        .logout {
-            color: #DC2626;
-            text-decoration: none;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .navbar {
-            background: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .nav-icons {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgb(48, 116, 242);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .profile-dropdown {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: white;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            width: 120px;
-        }
-
-        .profile-dropdown a {
-            display: block;
-            padding: 10px;
-            text-align: center;
-            text-decoration: none;
-            color: black;
-            cursor: pointer;
-        }
-
-        .content {
-            text-align: center;
-            margin-top: 50px;
-        }
-
-       
-        {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
     text-align: center;
@@ -186,40 +67,10 @@ th {
 tr:nth-child(even) {
     background-color: #f9f9f9;
 }
-    </style>
+</style>
 </head>
 <body>
-    <div class="sidebar">
-        <div>
-            <h1 class="logo">Warden</h1> 
-            <div class="menu">
-                <a href="{% url 'warden' %}">👤 Profile</a>
-                <a href="#" class="active">🏠 Mess Committee</a>
-                <a href="#">💰 Fee Details</a>
-                <a href="#">📩 Grievance</a>
-                <a href="#">📚 Student Details</a>
-            </div>
-        </div>
-        <a href="{% url 'logout' %}">🚪 Logout</a>
-    </div>
-
-    <div class="main-content">
-        <div class="navbar">
-            <div class="nav-icons">
-                <span>🔔</span>
-                <div class="profile-container">
-                    <button class="profile-avatar" onclick="toggleProfileMenu()">🧑</button>
-                    <div class="profile-dropdown" id="profileDropdown">
-                        <a href="{% url 'logout' %}">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="content">
-           
-        
-         <div class="container">
+    <div class="container">
         <h1>Warden's Mess Committee Management</h1>
         <button id="createCommitteeBtn">Create Mess Committee</button>
         <h2>Mess Committee for <span id="monthName"></span></h2>
@@ -238,11 +89,8 @@ tr:nth-child(even) {
         </table>
     </div>
 
-    </div>
-    </div>
-
     <script>
-           const students = [
+        const students = [
     { regNo: "202301", name: "Aarav Sharma", mobile: "9876543210" },
     { regNo: "202302", name: "Ishita Mehta", mobile: "8765432109" },
     { regNo: "202303", name: "Raj Patel", mobile: "7654321098" },
