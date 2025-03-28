@@ -19,6 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 from dotenv import load_dotenv
 import os
 
+import json
+
+# Load secrets.json
+with open(os.path.join(BASE_DIR, "secrets.json")) as f:
+    secrets = json.load(f)
+
 load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -83,11 +89,13 @@ WSGI_APPLICATION = 'miniproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lh_db',
+        'NAME': secrets["DB_NAME"],
+        'USER': secrets["DB_USER"],
+        'PASSWORD': secrets["DB_PASSWORD"],
         'HOST' : 'localhost',
         'PORT' : '5432',
-        'USER' : 'postgres',
-        'PASSWORD' : 'asnaks@2022'
+        
+        
     }
 }
 
