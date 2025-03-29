@@ -62,7 +62,6 @@ class Student(models.Model):
     aadhar_document = models.FileField(upload_to='documents/aadhar/', null=True, blank=True)
     income_certificate = models.FileField(upload_to='documents/income/', null=True, blank=True)
     caste_documents = models.FileField(upload_to='documents/caste/', null=True, blank=True)
-
 class Complaint(models.Model):
     CATEGORY_CHOICES = [
         ('Hostel Facility', 'Hostel Facility'),
@@ -71,11 +70,31 @@ class Complaint(models.Model):
         ('Staff', 'Staff'),
         ('Others', 'Others'),
     ]
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('In Progress', 'In Progress'),
+        ('Resolved', 'Resolved'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     description = models.TextField()
     file = models.FileField(upload_to='complaints_files/', blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
+    
+    def __str__(self):
+        # Check if the user exists before trying to access username
+        if self.user:
+            return f"Complaint by {self.user.username} - {self.category} ({self.status})"
+        return f"Complaint - {self.category} ({self.status})"  # Default return if no user
+
+class MessCommittee(models.Model):
+    students = models.ManyToManyField('Student')  # Multiple students in a committee
+    month = models.CharField(max_length=20)  # e.g., "March", "April"
+    year = models.IntegerField()  # e.g., 2025
+
+    class Meta:
+        unique_together = ("month", "year")  # Ensure only one committee per month-year
 
     def __str__(self):
-        return f"{self.category} - {self.timestamp}"
+        return f"Mess Committee - {self.month} {self.year}"

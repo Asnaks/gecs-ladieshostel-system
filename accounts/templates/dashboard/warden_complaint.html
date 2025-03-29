@@ -3,25 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warden Complaint Management</title>
+    <title>Warden Dashboard</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #ffffff, #f4f4f4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        * {
             margin: 0;
-            flex-direction: column;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+             }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #F8FAFC;
         }
-        .container {
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748B;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .menu a:hover, .menu a.active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .logout {
+            color: #DC2626;
+            text-decoration: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            
+            
+        }
+        
+
+        .navbar {
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgb(48, 116, 242);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 120px;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+        .btn {
+            background: #2563EB;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .complaint-container {
+            display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers horizontally */
+    justify-content: center; /* Centers vertically */
+    min-height: 100vh; /* Ensures full-page centering */
+    
+}
+       
+           
+    
+         .container {
             background: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            width: 500px;
+            width: 700px;
             text-align: center;
+            
         }
         h2 { color: #333; }
         .complaint-item {
@@ -31,17 +158,32 @@
             border-radius: 10px;
             background: #f9f9f9;
         }
+        .scroll-box{
+            overflow-y: auto;
+            width: 1200px; 
+           
+        }
         select, button {
-            padding: 12px 16px;
+            padding: 15px 20px;
             margin: 8px 5px;
             border-radius: 8px;
             border: none;
+            outline: none;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        select { width: 100%; }
+        select {
+            width: 100%;
+            background: #fff;
+            border: 2px solid #ddd;
+            color: #333;
+        }
+        select:hover, select:focus {
+            border-color: #007BFF;
+        }
         .save-btn {
             background: linear-gradient(135deg, #007BFF, #0056b3);
             color: white;
@@ -61,67 +203,70 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>complaints</h2>
-        <div id="complaintsContainer"></div>
+    <div class="sidebar">
+        <div>
+            <h1 class="logo">Warden</h1> 
+            <div class="menu">
+                <a href="#" >👤 Profile</a>
+                <a href="#">🏠 Mess Committee</a>
+                <a href="#">💰 Fee Details</a>
+                <a href="#" class="active">📩 Grievance</a>
+                <a href="#">📚 Student Details</a>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+    </div>
+    
+    <div class="main-content">
+        <div class="navbar">
+            <div class="nav-icons">
+                <span>🔔</span>
+                <div class="profile-container">
+                    <button class="profile-avatar" onclick="toggleProfileMenu()">🧑</button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-box">
+            <div class="complaint-container">
+                <div class="container">
+                    <h2>COMPLAINTS</h2>
+                    {% if complaints %}
+                        {% for complaint in complaints %}
+                            <div class="complaint-item">
+                                <p><strong>Category:</strong> {{ complaint.category }}</p>
+                                <p><strong>Description:</strong> {{ complaint.description }}</p>
+                                <p><strong>Submitted on:</strong> {{ complaint.timestamp }}</p>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="complaint_id" value="{{ complaint.id }}">
+                                    <p><strong>Status:</strong>
+                                        <select name="status">
+                                            <option value="Pending" {% if complaint.status == "Pending" %}selected{% endif %}>Pending</option>
+                                            <option value="In Progress" {% if complaint.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                                            <option value="Resolved" {% if complaint.status == "Resolved" %}selected{% endif %}>Resolved</option>
+                                        </select>
+                                    </p>
+                                    <button type="submit" class="save-btn">Save</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No complaints available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-
-        function displayComplaints() {
-            let complaintsContainer = document.getElementById("complaintsContainer");
-            complaintsContainer.innerHTML = "";
-            
-            if (complaints.length === 0) {
-                complaintsContainer.innerHTML = "<p>No complaints available.</p>";
-                return;
-            }
-            
-            complaints.forEach((complaint, index) => {
-                let complaintItem = document.createElement("div");
-                complaintItem.className = "complaint-item";
-                
-                complaintItem.innerHTML = `
-                    <p><strong>Category:</strong> ${complaint.category}</p>
-                    <p><strong>Description:</strong> ${complaint.description}</p>
-                    <p><strong>Submitted on:</strong> ${complaint.timestamp}</p>
-                    <p><strong>Status:</strong> 
-                        <select id="status-${index}">
-                            <option value="Pending" ${complaint.status === "Pending" ? "selected" : ""}>Pending</option>
-                            <option value="In Progress" ${complaint.status === "In Progress" ? "selected" : ""}>In Progress</option>
-                            <option value="Resolved" ${complaint.status === "Resolved" ? "selected" : ""}>Resolved</option>
-                        </select>
-                    </p>
-                    <button class="save-btn" onclick="updateStatus(${index})">Save</button>
-                    <button class="reset-btn" onclick="resetStatus(${index})">Reset</button>
-                `;
-                complaintsContainer.appendChild(complaintItem);
-            });
+        
+        function toggleProfileMenu() {
+            var menu = document.getElementById("profileDropdown");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
         }
-
-        function updateStatus(index) {
-    let selectElement = document.getElementById(`status-${index}`);
-    let newStatus = selectElement.value;
-    
-    complaints[index].status = newStatus;
-    localStorage.setItem("complaints", JSON.stringify(complaints));
-
-    alert("Status updated successfully");
-}
-
-function resetStatus(index) {
-    let selectElement = document.getElementById(`status-${index}`);
-    selectElement.value = "Pending"; // Set dropdown to "Pending"
-
-    complaints[index].status = "Pending"; // Update array
-    localStorage.setItem("complaints", JSON.stringify(complaints)); // Save in localStorage
-
-    alert("Status reset to Pending");
-}
-
-
-        displayComplaints();
     </script>
 </body>
 </html>

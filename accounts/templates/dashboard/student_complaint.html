@@ -248,6 +248,7 @@ button:active {
             <p><strong>Category:</strong> {{ complaint.category }}</p>
             <p><strong>Description:</strong> {{ complaint.description }}</p>
             <p><strong>Submitted on:</strong> {{ complaint.timestamp }}</p>
+            <p><strong>Status:</strong> {{ complaint.get_status_display }}</p>
             {% if complaint.file %}
                 <p><strong>File:</strong> <a href="{{ complaint.file.url }}" target="_blank">Download</a></p>
             {% endif %}
@@ -258,7 +259,7 @@ button:active {
 </div>
 
     <script>
-        let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        
 
         document.getElementById("file").addEventListener("change", function() {
             let file = this.files[0];

@@ -1,12 +1,12 @@
 from django.shortcuts import render,redirect
-from .forms import SignUpForm, LoginForm, StudentForm
+from .forms import SignUpForm, LoginForm,ComplaintForm, StudentForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from .models import Student
-from .models import Complaint
-from .forms import ComplaintForm
+from .models import Student,Complaint,MessCommittee
+import random,datetime
+from django.http import HttpResponse
 # Create your views here.
 def register(request):
     msg = None
@@ -85,8 +85,11 @@ def logout_view(request):
 
 @login_required
 def student(request):
-    student = Student.objects.get(username=request.user.username) 
-    return render(request, 'registration/student.html',{'student': student})
+    student = Student.objects.filter(username=request.user.username).first()  # Avoids exception
+    if not student:
+        return HttpResponse("Student not found", status=404)  # Handle missing student case
+
+    return render(request, 'registration/student.html', {'student': student})
 
 @login_required           
 def clerk(request):
@@ -131,27 +134,117 @@ def payment_view(request):
 
 @login_required
 def student_messcom(request):
-    return render(request,'dashboard/student_messcom.html')
+    current_month = datetime.datetime.now().strftime("%B")
+    current_year = datetime.datetime.now().year
+
+    # Fetch the subcommittee for the current month and year
+    subcommittee = MessCommittee.objects.filter(month=current_month, year=current_year).first()
+
+    # Fetch students in the subcommittee if it exists
+    students_in_committee = subcommittee.students.all() if subcommittee else []
+
+    return render(request, "dashboard/student_messcom.html", {
+        "students_in_committee": students_in_committee,
+        "month": current_month,
+        "year": current_year
+    })
+
+
+    
+
 
 @login_required
 def warden_committe(request):
-    return render(request,'dashboard/warden_committe.html')
+    current_month = datetime.datetime.now().strftime("%B")
+    current_year = datetime.datetime.now().year
 
+    # Get last month's details
+    last_month = (datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)).strftime("%B")
+    last_year = current_year if last_month != "December" else current_year - 1
+
+    # Check if a committee exists for this month
+    existing_committee = MessCommittee.objects.filter(month=current_month, year=current_year).first()
+
+    if not existing_committee:
+        # Fetch all students
+        students = list(Student.objects.all())
+
+        # Get students from last month's committee
+        last_month_committee = MessCommittee.objects.filter(month=last_month, year=last_year).values_list("students", flat=True)
+
+        # Filter students who were NOT in last month's committee
+        eligible_students = [student for student in students if student.id not in last_month_committee]
+
+        if len(eligible_students) < 10:
+            return render(request, "dashboard/warden_committe.html", {
+                "error": "Not enough new students available!",
+                "month": current_month,
+                "year": current_year
+            })
+
+        # Shuffle and select 10 students
+        random.shuffle(eligible_students)
+        selected_students = eligible_students[:10]
+
+        # Create a new committee
+        existing_committee = MessCommittee.objects.create(month=current_month, year=current_year)
+        existing_committee.students.set(selected_students)
+
+    # Retrieve selected students
+    committee_students = existing_committee.students.all()
+
+    return render(request, "dashboard/warden_committe.html", {
+        "committee": committee_students,
+        "month": current_month,
+        "year": current_year
+    })
 
 @login_required
 def warden_complaint(request):
-    return render(request,'dashboard/warden_complaint.html')
+    complaints = Complaint.objects.all()
+    if request.method == 'POST':
+        complaint_id = request.POST.get('complaint_id')
+        new_status = request.POST.get('status')
+        
+        try:
+            complaint = Complaint.objects.get(id=complaint_id)
+            complaint.status = new_status
+            complaint.save()
+        except Complaint.DoesNotExist:
+            pass
+        
+        return redirect('warden_complaint')
+    return render(request,'dashboard/warden_complaint.html',{'complaints': complaints})
 
 @login_required
 def complaint_system(request):
     if request.method == "POST":
         form = ComplaintForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            complaint = form.save(commit=False)  # Don't save yet
+            complaint.user = request.user  # Assign the current logged-in user
+            complaint.save()
             return redirect('student_complaint')
     else:
         form = ComplaintForm()
 
-    complaints = Complaint.objects.all()
+    complaints = Complaint.objects.filter(user=request.user)
     
     return render(request, 'dashboard/student_complaint.html', {'form': form, 'complaints': complaints})
+
+@login_required
+def matron_messcom(request):
+    current_month = datetime.datetime.now().strftime("%B")
+    current_year = datetime.datetime.now().year
+
+    # Fetch the subcommittee for the current month and year
+    subcommittee = MessCommittee.objects.filter(month=current_month, year=current_year).first()
+
+    # Fetch students in the subcommittee if it exists
+    students_in_committee = subcommittee.students.all() if subcommittee else []
+
+    return render(request, "dashboard/matron_messcom.html", {
+        "students_in_committee": students_in_committee,
+        "month": current_month,
+        "year": current_year
+    })

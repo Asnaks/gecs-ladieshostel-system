@@ -218,7 +218,7 @@ tr:nth-child(even) {
         
         <div class="container">
         <h1>Mess Committee Members</h1>
-        <h2>For <span id="monthName"></span></h2>
+        <h2>For {{ month }} {{ year }}</h2>
         
         <table>
             <thead>
@@ -228,9 +228,21 @@ tr:nth-child(even) {
                 </tr>
             </thead>
             <tbody id="committeeTable">
-                <!-- Selected members will be inserted here -->
+                
+                    {% for student in students_in_committee %}
+                        <tr>
+                            <td>{{ student.username }}</td>
+                            <td>{{ student.full_name }} </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2">No students in the committee for this month.</td>
+                        </tr>
+                    {% endfor %}
+                
             </tbody>
         </table>
+        
     </div>
 </div>
 <script>
